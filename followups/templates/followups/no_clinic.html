@@ -1,0 +1,16 @@
+{% extends "followups/base.html" %}
+
+{% block title %}No Clinic - Clinic Follow-up Tracker{% endblock %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 100px auto; text-align: center;">
+    <div class="card">
+        <div style="font-size: 64px; margin-bottom: 20px;">⚠️</div>
+        <h2>No Clinic Assigned</h2>
+        <p style="margin: 20px 0; color: #6c757d;">
+            Your account is not linked to any clinic. Please contact your administrator to assign you to a clinic.
+        </p>
+        <a href="{% url 'logout' %}" class="btn btn-secondary">Logout</a>
+    </div>
+</div>
+{% endblock %}

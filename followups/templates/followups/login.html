@@ -1,0 +1,32 @@
+{% extends "followups/base.html" %}
+
+{% block title %}Login - Clinic Follow-up Tracker{% endblock %}
+
+{% block content %}
+<div style="max-width: 400px; margin: 100px auto;">
+    <div class="card">
+        <h2 style="text-align: center; margin-bottom: 30px;">🏥 Clinic Follow-up Tracker</h2>
+        <h3 style="text-align: center; margin-bottom: 20px; color: #6c757d;">Login</h3>
+        
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" class="form-control" required autofocus>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" class="form-control" required>
+            </div>
+            
+            <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
+        </form>
+        
+        <div style="margin-top: 20px; text-align: center; color: #6c757d; font-size: 14px;">
+            <p>Don't have an account? Contact your administrator.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

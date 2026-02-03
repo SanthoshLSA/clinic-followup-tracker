@@ -1,0 +1,123 @@
+{% extends "followups/base.html" %}
+
+{% block title %}Dashboard - Clinic Follow-up Tracker{% endblock %}
+
+{% block content %}
+<div style="margin: 30px 0;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h1>Follow-ups Dashboard</h1>
+        <a href="{% url 'create_followup' %}" class="btn btn-primary">+ Add New Follow-up</a>
+    </div>
+    
+    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+        <h3 style="color: white; margin-bottom: 10px;">{{ clinic.name }}</h3>
+        <p style="opacity: 0.9;">Clinic Code: {{ clinic.clinic_code }}</p>
+    </div>
+    
+    <!-- Summary Statistics -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px;">
+        <div class="card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+            <h3 style="color: white;">{{ total_count }}</h3>
+            <p>Total Follow-ups</p>
+        </div>
+        <div class="card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white;">
+            <h3 style="color: white;">{{ pending_count }}</h3>
+            <p>Pending</p>
+        </div>
+        <div class="card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white;">
+            <h3 style="color: white;">{{ done_count }}</h3>
+            <p>Completed</p>
+        </div>
+    </div>
+    
+    <!-- Filters -->
+    <div class="card">
+        <h3>Filters</h3>
+        <form method="get" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; align-items: end;">
+            <div class="form-group" style="margin: 0;">
+                <label>Status</label>
+                {{ filter_form.status }}
+            </div>
+            <div class="form-group" style="margin: 0;">
+                <label>From Date</label>
+                {{ filter_form.due_date_from }}
+            </div>
+            <div class="form-group" style="margin: 0;">
+                <label>To Date</label>
+                {{ filter_form.due_date_to }}
+            </div>
+            <div>
+                <button type="submit" class="btn btn-primary">Apply Filters</button>
+                <a href="{% url 'dashboard' %}" class="btn btn-secondary">Clear</a>
+            </div>
+        </form>
+    </div>
+    
+    <!-- Follow-ups Table -->
+    <div class="card">
+        <h3>Follow-ups List</h3>
+        
+        {% if followups %}
+        <div style="overflow-x: auto;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Patient Name</th>
+                        <th>Phone</th>
+                        <th>Language</th>
+                        <th>Due Date</th>
+                        <th>Status</th>
+                        <th>Views</th>
+                        <th>Public Link</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for followup in followups %}
+                    <tr>
+                        <td><strong>{{ followup.patient_name }}</strong></td>
+                        <td>{{ followup.phone }}</td>
+                        <td>{{ followup.get_language_display }}</td>
+                        <td>{{ followup.due_date|date:"M d, Y" }}</td>
+                        <td>
+                            <span class="badge badge-{{ followup.status }}">
+                                {{ followup.get_status_display }}
+                            </span>
+                        </td>
+                        <td>
+                            <span style="background: #e3f2fd; color: #1976d2; padding: 4px 8px; border-radius: 4px; font-size: 12px;">
+                                👁️ {{ followup.views }}
+                            </span>
+                        </td>
+                        <td>
+                            <a href="{% url 'public_view' followup.public_token %}" 
+                               target="_blank" 
+                               style="color: #007bff; text-decoration: none;"
+                               title="Open public tracking page">
+                                🔗 View Link
+                            </a>
+                        </td>
+                        <td>
+                            <a href="{% url 'edit_followup' followup.pk %}" class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;">Edit</a>
+                            {% if followup.status == 'pending' %}
+                            <form method="post" action="{% url 'mark_done' followup.pk %}" style="display: inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-success" style="padding: 6px 12px; font-size: 12px;">Mark Done</button>
+                            </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div style="text-align: center; padding: 40px; color: #6c757d;">
+            <p style="font-size: 18px; margin-bottom: 10px;">📋 No follow-ups found</p>
+            <p>Create your first follow-up to get started!</p>
+            <a href="{% url 'create_followup' %}" class="btn btn-primary" style="margin-top: 20px;">+ Add Follow-up</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
