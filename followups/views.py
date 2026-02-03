@@ -56,13 +56,15 @@ def export_followups_csv(request):
         'Status', 'Notes', 'Public Token', 'View Count', 'Created At'
     ])
     
-    followups = FollowUp.objects.filter(
-        clinic=user_clinic
-    ).select_related(
-        'created_by', 'clinic'
-    ).annotate(
-        views=Count('public_views')
-    )
+    followups = (
+    FollowUp.objects
+    .filter(clinic=user_clinic)
+    .select_related('created_by', 'clinic')
+    .prefetch_related('public_views')
+    .order_by('-due_date', '-created_at')
+)
+
+
     
     for followup in followups:
         writer.writerow([
@@ -87,9 +89,14 @@ def dashboard(request):
         messages.error(request, 'Your account is not linked to any clinic. Please contact admin.')
         return render(request, 'followups/no_clinic.html')
     
-    followups = FollowUp.objects.filter(clinic=user_clinic).select_related(
-        'created_by', 'clinic'
-    ).prefetch_related('public_views')
+    followups = (
+    FollowUp.objects
+    .filter(clinic=user_clinic)
+    .select_related('created_by', 'clinic')
+    .prefetch_related('public_views')
+    .order_by('-due_date', '-created_at')
+)
+
     
     filter_form = FollowUpFilterForm(request.GET)
     
