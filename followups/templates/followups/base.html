@@ -159,12 +159,12 @@
     {% if user.is_authenticated %}
     <nav class="navbar">
         <div class="container">
-            <h1>🏥 Clinic Follow-up Tracker</h1>
+            <h1><b>Clinic Follow-up Tracker</b></h1>
             <nav>
-                <a href="{% url 'dashboard' %}">Dashboard</a>
-                <a href="{% url 'create_followup' %}">Add Follow-up</a>
-                <a href="/admin/">Admin</a>
-                <a href="{% url 'logout' %}">Logout ({{ user.username }})</a>
+                <a href="{% url 'dashboard' %}"><b>Dashboard</b></a>
+                <a href="{% url 'create_followup' %}"><b>Add Follow-up</b></a>
+                <a href="/admin/"><b>Admin</b></a>
+                <a href="{% url 'logout' %}"><b>Logout ({{ user.username }})</b></a>
             </nav>
         </div>
     </nav>
@@ -183,7 +183,7 @@
     </div>
     
     <div class="footer">
-        <p>&copy; 2024 Clinic Follow-up Tracker. All rights reserved.</p>
+        <p>&copy; 2026 Clinic Follow-up Tracker. All rights reserved.</p>
     </div>
 </body>
 </html>

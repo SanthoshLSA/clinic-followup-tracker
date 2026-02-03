@@ -47,7 +47,6 @@ def export_followups_csv(request):
         messages.error(request, 'Your account is not linked to any clinic.')
         return redirect('dashboard')
     
-    # Create the HttpResponse object with CSV header
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = f'attachment; filename="followups_{user_clinic.clinic_code}.csv"'
     
@@ -112,7 +111,7 @@ def dashboard(request):
     followups = followups.annotate(views=Count('public_views'))
     
     # Pagination
-    paginator = Paginator(followups, 10)  # 10 items per page
+    paginator = Paginator(followups, 10)  
     page = request.GET.get('page', 1)
     
     try:

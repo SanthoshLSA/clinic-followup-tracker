@@ -19,15 +19,15 @@
     
     <!-- Summary Statistics -->
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px;">
-        <div class="card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+        <div class="card" style="background: linear-gradient(135deg, #7c5fff 0%, #bb78ff 100%); color: white;">
             <h3 style="color: white;">{{ total_count }}</h3>
             <p>Total Follow-ups</p>
         </div>
-        <div class="card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white;">
+        <div class="card" style="background: linear-gradient(135deg, #ff8800 0%, #ff9456 100%); color: white;">
             <h3 style="color: white;">{{ pending_count }}</h3>
             <p>Pending</p>
         </div>
-        <div class="card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white;">
+        <div class="card" style="background: linear-gradient(135deg, #04c414 0%, #87ff50 100%); color: white;">
             <h3 style="color: white;">{{ done_count }}</h3>
             <p>Completed</p>
         </div>
@@ -89,7 +89,7 @@
                         </td>
                         <td>
                             <span style="background: #e3f2fd; color: #1976d2; padding: 4px 8px; border-radius: 4px; font-size: 12px;">
-                                👁️ {{ followup.views }}
+                                {{ followup.views }}
                             </span>
                         </td>
                         <td>
@@ -97,7 +97,7 @@
                                target="_blank" 
                                style="color: #007bff; text-decoration: none;"
                                title="Open public tracking page">
-                                🔗 View Link
+                                View Link
                             </a>
                         </td>
                         <td>
@@ -116,7 +116,7 @@
         </div>
         {% else %}
         <div style="text-align: center; padding: 40px; color: #6c757d;">
-            <p style="font-size: 18px; margin-bottom: 10px;">📋 No follow-ups found</p>
+            <p style="font-size: 18px; margin-bottom: 10px;">No follow-ups found</p>
             <p>Create your first follow-up to get started!</p>
             <a href="{% url 'create_followup' %}" class="btn btn-primary" style="margin-top: 20px;">+ Add Follow-up</a>
         </div>
