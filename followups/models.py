@@ -71,7 +71,9 @@ class FollowUp(models.Model):
 
     @property
     def view_count(self):
-        return self.public_views.count()
+        # Use annotated value if present (dashboard)
+        return getattr(self, 'views', None) or self.public_views.count()
+
 
 
 class PublicViewLog(models.Model):

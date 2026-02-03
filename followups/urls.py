@@ -9,5 +9,6 @@ urlpatterns = [
     path('followup/create/', views.create_followup, name='create_followup'),
     path('followup/<int:pk>/edit/', views.edit_followup, name='edit_followup'),
     path('followup/<int:pk>/mark-done/', views.mark_done, name='mark_done'),
+    path('export/csv/', views.export_followups_csv, name='export_csv'), 
     path('p/<str:token>/', views.public_view, name='public_view'),
 ]

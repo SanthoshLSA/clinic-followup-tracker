@@ -6,6 +6,9 @@
 <div style="margin: 30px 0;">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
         <h1>Follow-ups Dashboard</h1>
+        <div>
+            <a href="{% url 'export_csv' %}" class="btn btn-secondary" style="margin-right: 10px;">Export CSV</a>
+         </div>
         <a href="{% url 'create_followup' %}" class="btn btn-primary">+ Add New Follow-up</a>
     </div>
     
@@ -120,4 +123,26 @@
         {% endif %}
     </div>
 </div>
+{% if paginator.num_pages > 1 %}
+        <div style="margin-top: 30px; text-align: center;">
+            <div style="display: inline-flex; gap: 5px; align-items: center;">
+                {% if followups.has_previous %}
+                    <a href="?page=1{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.due_date_from %}&due_date_from={{ request.GET.due_date_from }}{% endif %}{% if request.GET.due_date_to %}&due_date_to={{ request.GET.due_date_to }}{% endif %}" class="btn btn-secondary">First</a>
+                    <a href="?page={{ followups.previous_page_number }}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.due_date_from %}&due_date_from={{ request.GET.due_date_from }}{% endif %}{% if request.GET.due_date_to %}&due_date_to={{ request.GET.due_date_to }}{% endif %}" class="btn btn-secondary">Previous</a>
+                {% endif %}
+                
+                <span style="margin: 0 15px; color: #6c757d;">
+                    Page {{ followups.number }} of {{ paginator.num_pages }}
+                </span>
+                
+                {% if followups.has_next %}
+                    <a href="?page={{ followups.next_page_number }}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.due_date_from %}&due_date_from={{ request.GET.due_date_from }}{% endif %}{% if request.GET.due_date_to %}&due_date_to={{ request.GET.due_date_to }}{% endif %}" class="btn btn-secondary">Next</a>
+                    <a href="?page={{ paginator.num_pages }}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.due_date_from %}&due_date_from={{ request.GET.due_date_from }}{% endif %}{% if request.GET.due_date_to %}&due_date_to={{ request.GET.due_date_to }}{% endif %}" class="btn btn-secondary">Last</a>
+                {% endif %}
+            </div>
+            <div style="margin-top: 10px; color: #6c757d; font-size: 14px;">
+                Showing {{ followups.start_index }} to {{ followups.end_index }} of {{ paginator.count }} follow-ups
+            </div>
+        </div>
+        {% endif %}
 {% endblock %}

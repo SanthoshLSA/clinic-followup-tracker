@@ -7,7 +7,10 @@ from django.http import HttpResponseForbidden
 from django.views.decorators.http import require_http_methods
 from .models import FollowUp, PublicViewLog
 from .forms import FollowUpForm, FollowUpFilterForm
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .utils import get_client_ip, get_user_agent
+import csv
+from django.http import HttpResponse
 
 
 def login_view(request):
@@ -35,6 +38,47 @@ def logout_view(request):
     messages.info(request, 'You have been logged out.')
     return redirect('login')
 
+@login_required
+def export_followups_csv(request):
+    """Export follow-ups to CSV file."""
+    try:
+        user_clinic = request.user.profile.clinic
+    except:
+        messages.error(request, 'Your account is not linked to any clinic.')
+        return redirect('dashboard')
+    
+    # Create the HttpResponse object with CSV header
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = f'attachment; filename="followups_{user_clinic.clinic_code}.csv"'
+    
+    writer = csv.writer(response)
+    writer.writerow([
+        'Patient Name', 'Phone', 'Language', 'Due Date', 
+        'Status', 'Notes', 'Public Token', 'View Count', 'Created At'
+    ])
+    
+    followups = FollowUp.objects.filter(
+        clinic=user_clinic
+    ).select_related(
+        'created_by', 'clinic'
+    ).annotate(
+        views=Count('public_views')
+    )
+    
+    for followup in followups:
+        writer.writerow([
+            followup.patient_name,
+            followup.phone,
+            followup.get_language_display(),
+            followup.due_date.strftime('%Y-%m-%d'),
+            followup.get_status_display(),
+            followup.notes,
+            followup.public_token,
+            followup.views,
+            followup.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+        ])
+    
+    return response
 
 @login_required
 def dashboard(request):
@@ -67,13 +111,25 @@ def dashboard(request):
     done_count = followups.filter(status='done').count()
     followups = followups.annotate(views=Count('public_views'))
     
+    # Pagination
+    paginator = Paginator(followups, 10)  # 10 items per page
+    page = request.GET.get('page', 1)
+    
+    try:
+        followups_page = paginator.page(page)
+    except PageNotAnInteger:
+        followups_page = paginator.page(1)
+    except EmptyPage:
+        followups_page = paginator.page(paginator.num_pages)
+    
     context = {
-        'followups': followups,
+        'followups': followups_page,
         'filter_form': filter_form,
         'total_count': total_count,
         'pending_count': pending_count,
         'done_count': done_count,
         'clinic': user_clinic,
+        'paginator': paginator,
     }
     
     return render(request, 'followups/dashboard.html', context)
