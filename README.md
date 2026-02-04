@@ -5,7 +5,7 @@
 ### 1. Clone the Repository
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/SanthoshLSA/clinic-followup-tracker.git
 cd clinic_followup_tracker
 ```
 

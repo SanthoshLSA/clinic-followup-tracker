@@ -56,15 +56,7 @@ def export_followups_csv(request):
         'Status', 'Notes', 'Public Token', 'View Count', 'Created At'
     ])
     
-    followups = (
-    FollowUp.objects
-    .filter(clinic=user_clinic)
-    .select_related('created_by', 'clinic')
-    .prefetch_related('public_views')
-    .order_by('-due_date', '-created_at')
-)
-
-
+    followups = FollowUp.objects.filter(clinic=user_clinic).order_by('-created_at')
     
     for followup in followups:
         writer.writerow([
@@ -75,7 +67,7 @@ def export_followups_csv(request):
             followup.get_status_display(),
             followup.notes,
             followup.public_token,
-            followup.views,
+            followup.view_count,  
             followup.created_at.strftime('%Y-%m-%d %H:%M:%S'),
         ])
     
@@ -92,8 +84,8 @@ def dashboard(request):
     followups = (
     FollowUp.objects
     .filter(clinic=user_clinic)
-    .select_related('created_by', 'clinic')
-    .prefetch_related('public_views')
+    .select_related('clinic', 'created_by')
+    .annotate(views=Count('public_views'))
     .order_by('-due_date', '-created_at')
 )
 
